@@ -1,0 +1,51 @@
+# vim: ft=graphql
+require_relative "../client"
+
+module ShopifyApi::Queries; end
+
+module ShopifyApi::Queries::AuthorCalendar
+
+GetLastUpdate = ShopifyApi::Client.parse <<-'GRAPHQL'
+query {
+  metaobjectByHandle(handle: {
+    type: "author-calendar-updated-at",
+    handle: "singleton"
+  }) {
+    updated_at: field(key: "updated_at") { value }
+  }
+}
+GRAPHQL
+
+SetLastUpdate = ShopifyApi::Client.parse <<-'GRAPHQL'
+mutation($handle: MetaobjectHandleInput!, $metaobject: MetaobjectUpsertInput!) {
+  metaobjectUpsert(handle: $handle, metaobject: $metaobject) {
+    metaobject {
+      handle
+      updated_at: field(key: "updated_at") { value }
+    }
+    userErrors {
+      field
+      message
+      code
+    }
+  }
+}
+GRAPHQL
+
+UpsertItem = ShopifyApi::Client.parse <<-'GRAPHQL'
+mutation($handle: MetaobjectHandleInput!, $metaobject: MetaobjectUpsertInput!) {
+  metaobjectUpsert(handle: $handle, metaobject: $metaobject) {
+    metaobject {
+      handle
+    }
+    userErrors {
+        field
+        message
+        code
+    }
+  }
+}
+GRAPHQL
+
+end
+

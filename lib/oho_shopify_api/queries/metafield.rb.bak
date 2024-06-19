@@ -1,0 +1,37 @@
+# vim: ft=graphql
+require_relative "../client"
+
+module ShopifyApi::Queries; end
+
+module ShopifyApi::Queries::Metafield
+
+Find = ShopifyApi::Client.parse <<-'GRAPHQL'
+query($key: String!) {
+metafieldDefinitions(first: 1, ownerType: PRODUCT, key: $key) {
+    edges {
+      node {
+        key
+        name
+      }
+    }
+  }
+}
+GRAPHQL
+
+Create= ShopifyApi::Client.parse <<-'GRAPHQL'
+mutation($definition: MetafieldDefinitionInput!) {
+  metafieldDefinitionCreate(definition: $definition) {
+    createdDefinition {
+      id
+      name
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+GRAPHQL
+
+end
+
