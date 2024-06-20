@@ -1,31 +1,205 @@
 # vim: ft=graphql
+
 require_relative "../client"
 
-module OhoShopifyApi::Queries
+module OhoShopifyApi::Queries; end
+module OhoShopifyApi::Queries::Order
 
-Order = OhoShopifyApi::Client.parse <<-'GRAPHQL'
-mutation($handle: String!, $author: String!, $author_title: String!, $company: String!, $quote: String!, $book_code: String!) {
-  metaobjectCreate(metaobject: {
-    type: "praise_quote",
-    handle: $handle,
-    capabilities: {
-        publishable: {
-            status: ACTIVE
-        }
-    },
-    fields: [
-      { key: "author",       value: $author },
-      { key: "author_title", value: $author_title },
-      { key: "company",      value: $company },
-      { key: "quote",        value: $quote }
-      { key: "book_code",    value: $book_code }
-    ]
-  }) {
-    userErrors {
-      message
-    }
-  }
+Fragments = OhoShopifyApi::Client.parse <<-'GRAPHQL'
+fragment AddressFields on MailingAddress {
+    id
+    name
+    company
+    address1
+    address2
+    city
+    province
+    zip
+    provinceCode
+    country
+    phone
 }
+
 GRAPHQL
 
+
+
+Fetch = OhoShopifyApi::Client.parse <<-GRAPHQL
+fragment Amount on MoneyBag {
+    shopMoney {
+        amount
+        currencyCode
+    }
+}
+
+query($filter: String, $limit: Int, $lastCursor: String) {
+    orders(query: $filter, first: $limit, after: $lastCursor) {
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+
+        nodes {
+            id
+            createdAt
+            updatedAt
+            processedAt
+            estimatedTaxes
+            taxesIncluded
+            name
+            cancelledAt
+            discountCodes
+            fullyPaid
+            lineItems(first: 50) {
+                nodes {
+                    id
+                    quantity
+                    sku
+                    nonFulfillableQuantity
+                    refundableQuantity
+                    currentQuantity
+                    variantTitle
+                    variant {
+                        inventoryItem {
+                            unitCost {
+                                amount
+                                currencyCode
+                            }
+                        }
+                    }
+                    discountedTotalSet {
+                        ...Amount
+                    }
+                    discountAllocations {
+                        allocatedAmountSet {
+                            ...Amount
+                        }
+                        discountApplication {
+                            allocationMethod
+                            targetSelection
+                            targetType
+                            value {
+                                ... on MoneyV2 {
+                                    __typename
+                                    amount
+                                }
+                            }
+                        }
+                    }
+                    taxLines(first: 10) {
+                        priceSet {
+                            ...Amount
+                        }
+                    }
+                }
+            }
+            refunds(first: 20) {
+                createdAt
+                updatedAt
+                note
+                refundLineItems(first: 10) {
+                    nodes {
+                        priceSet {
+                            ...Amount
+                        }
+                        quantity
+                        subtotalSet {
+                            ...Amount
+                        }
+                        totalTaxSet {
+                            ...Amount
+                        }
+                        lineItem {
+                            id
+                            sku
+                        }
+                    }
+                }
+                totalRefundedSet {
+                    ...Amount
+                }
+            }
+
+            transactions {
+                amountSet {
+                    ...Amount
+                }
+                createdAt
+                fees {
+                    amount {
+                        amount
+                        currencyCode
+                    }
+                    flatFee {
+                        amount
+                        currencyCode
+                    }
+                    flatFeeName
+                    rate
+                    rateName
+                    taxAmount {
+                        amount
+                        currencyCode
+                    }
+                    type
+                }
+                kind
+                status
+            }
+
+            netPaymentSet {
+                ...Amount
+            }
+            totalDiscountsSet {
+                ...Amount
+            }
+            totalPriceSet {
+                ...Amount
+            }
+            totalReceivedSet {
+                ...Amount
+            }
+            totalRefundedSet {
+                ...Amount
+            }
+            totalShippingPriceSet {
+                ...Amount
+            }
+            totalTaxSet {
+                ...Amount
+            }
+
+            returns(first: 10) {
+                nodes {
+                    name
+                    status
+                    totalQuantity
+                    refunds(first: 10) {
+                        nodes {
+                            refundLineItems(first: 10) {
+                                nodes {
+                                    priceSet {
+                                        ...Amount
+                                    }
+                                    quantity
+                                    subtotalSet {
+                                        ...Amount
+                                    }
+                                    totalTaxSet {
+                                        ...Amount
+                                    }
+                                }
+                            }
+                            totalRefundedSet {
+                                ...Amount
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+GRAPHQL
 end

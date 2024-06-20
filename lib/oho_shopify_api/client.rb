@@ -5,6 +5,11 @@ SCHEMA_FILE = "/tmp/shopify_schema.json"
 
 module OhoShopifyApi
 
+  # general helper
+  def self.convert_dtm(dtm)
+    dtm.strftime("%F")
+  end
+
   module Private
     HTTP = GraphQL::Client::HTTP.new("https://#{ENV['SHOPIFY_STORE']}/admin/api/2024-01/graphql.json") do
       def headers(context)
@@ -16,7 +21,7 @@ module OhoShopifyApi
     end
 
     unless File.exist? SCHEMA_FILE
-      GraphQL::Client.dump_schema(Sapi::HTTP, SCHEMA_FILE)
+      GraphQL::Client.dump_schema(HTTP, SCHEMA_FILE)
     end
 
     Schema = GraphQL::Client.load_schema(SCHEMA_FILE)

@@ -20,6 +20,19 @@ mutation($definition: MetaobjectDefinitionCreateInput!) {
 }
 GRAPHQL
 
+Delete = OhoShopifyApi::Client.parse <<-'GRAPHQL'
+mutation($id: ID!) {
+    metaobjectDelete(id: $id) {
+        deletedId
+        userErrors {
+            field
+            message
+            code
+        }
+    }
+}
+GRAPHQL
+
 FindAllTypes = OhoShopifyApi::Client.parse <<-'GRAPHQL'
 {
     metaobjectDefinitions(first: 200) {
@@ -28,6 +41,15 @@ FindAllTypes = OhoShopifyApi::Client.parse <<-'GRAPHQL'
         type
     }
   }
+}
+GRAPHQL
+
+
+FindByHandle = OhoShopifyApi::Client.parse <<-'GRAPHQL'
+query($handle: MetaobjectHandleInput!) {
+    metaobjectByHandle(handle: $handle) {
+        id
+    }
 }
 GRAPHQL
 

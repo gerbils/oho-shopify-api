@@ -19,11 +19,16 @@ module OhoShopifyApi::Metaobject
     KNOWN_TYPES.find {|kt| kt["type"] == type}
   end
 
+  def delete(id)
+    do_delete(id)
+  end
+
+  def find(handle, type) 
+    do_find_by_handle(input_handle(handle, type))
+  end
+
   def upsert(type, handle, fields)
-    mo_handle = {
-      handle: handle,
-      type:   type,
-    }
+    mo_handle = input_handle(handle, type)
     mapped_fields = fields.map {|k,v| { key: k, value: v }}
     metaobject = {
       handle: handle,
@@ -47,6 +52,13 @@ module OhoShopifyApi::Metaobject
     end
   end
 
+  def input_handle(handle, type)
+    {
+      handle: handle,
+      type:   type,
+    }
+  end
+
   def do_define(definition)
     if defined?(definition[:type])
       puts "Skipping #{definition[:type]}: already defined"
@@ -68,6 +80,23 @@ module OhoShopifyApi::Metaobject
     sleep(0.02)
   end
 
+  def do_delete(id)
+    raw_result = Client.query(MO::Delete, variables: { id: id })
+    result = raw_result.to_hash
+    pp result
+    errors = result["errors"] || result["data"]["metaobjectDelete"]["userErrors"]
+    if errors && !errors.empty? 
+      if errors.first["code"] == "TAKEN"
+        puts "Skipping Metaobject definition: #{spec}"
+      else
+        pp errors
+        exit 1
+      end
+    end
+    sleep(0.02)
+  end
+
+
   def do_upsert(mo_handle, metaobject)
     raw_result = Client.query(MO::Upsert, variables: { handle: mo_handle, metaobject: metaobject })
     result = raw_result.to_hash
@@ -78,6 +107,14 @@ module OhoShopifyApi::Metaobject
       exit 1
     end
     sleep(0.02)
+  end
+
+  def do_find_by_handle(mo_handle)
+    raw_result = Client.query(MO::FindByHandle, variables: { handle: mo_handle })
+    result = raw_result.to_hash
+    pp result
+    mo = result.dig("data", "metaobjectByHandle", "id")
+    pp mo
   end
 
 end
