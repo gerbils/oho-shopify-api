@@ -11,20 +11,35 @@ module OhoShopifyApi
   end
 
   module Private
-    HTTP = GraphQL::Client::HTTP.new("https://#{ENV['SHOPIFY_STORE']}/admin/api/2024-01/graphql.json") do
+    HTTP = GraphQL::Client::HTTP.new("https://#{ENV['SHOPIFY_STORE']}/admin/api/2024-04/graphql.json") do
       def headers(context)
         {
           "Content-Type": "application/json",
-          'X-Shopify-Access-Token': ENV["SHOPIFY_TOKEN"] || fail("source set_env")
+          'X-Shopify-Access-Token': ENV["SHOPIFY_TOKEN"] || fail("set SHOPIFY environment variables")
         }
       end
     end
 
-    unless File.exist? SCHEMA_FILE
-      GraphQL::Client.dump_schema(HTTP, SCHEMA_FILE)
+    # If the schema becomes outdated, the load fails with BadRequest, so we blow it away
+    schema = if File.exist? SCHEMA_FILE
+      begin
+        STDERR.puts "Loading cached schema"
+        GraphQL::Client.load_schema(SCHEMA_FILE)
+      rescue KeyError
+        STDERR.puts "Cached schema failed..."
+        File.unlink(SCHEMA_FILE)
+        nil
+      end
     end
 
-    Schema = GraphQL::Client.load_schema(SCHEMA_FILE)
+    if !schema
+      STDERR.puts "Loading schema from SHOPIFY"
+      schema = GraphQL::Client.load_schema(HTTP).tap do 
+        GraphQL::Client.dump_schema(HTTP, SCHEMA_FILE)
+      end
+    end
+
+    Schema = schema
     Client = GraphQL::Client.new(schema: Schema, execute: HTTP)
   end
 
