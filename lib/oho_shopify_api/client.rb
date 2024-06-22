@@ -6,8 +6,12 @@ SCHEMA_FILE = "/tmp/shopify_schema.json"
 module OhoShopifyApi
 
   # general helper
-  def self.convert_dtm(dtm)
+  def self.convert_date(dtm)
     dtm.strftime("%F")
+  end
+
+  def self.convert_dtm(dtm)
+    dtm.strftime("%FT%T")
   end
 
   module Private
@@ -34,7 +38,9 @@ module OhoShopifyApi
 
     if !schema
       STDERR.puts "Loading schema from SHOPIFY"
-      schema = GraphQL::Client.load_schema(HTTP).tap do 
+      pp HTTP
+      schema = GraphQL::Client.load_schema(HTTP).tap do
+        STDERR.puts "Caching downloaded schema"
         GraphQL::Client.dump_schema(HTTP, SCHEMA_FILE)
       end
     end
