@@ -23,7 +23,7 @@ module OhoShopifyApi::Metaobject
     do_delete(id)
   end
 
-  def find(handle, type) 
+  def find(type, handle) 
     do_find_by_handle(input_handle(handle, type))
   end
 

@@ -49,6 +49,10 @@ FindByHandle = OhoShopifyApi::Client.parse <<-'GRAPHQL'
 query($handle: MetaobjectHandleInput!) {
     metaobjectByHandle(handle: $handle) {
         id
+        fields {
+          key
+          value
+        }
     }
 }
 GRAPHQL
