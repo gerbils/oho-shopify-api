@@ -113,8 +113,16 @@ module OhoShopifyApi::Metaobject
     raw_result = Client.query(MO::FindByHandle, variables: { handle: mo_handle })
     result = raw_result.to_hash
     pp result
-    mo = result.dig("data", "metaobjectByHandle", "id")
-    pp mo
+    mo = result.dig("data", "metaobjectByHandle")
+    return nil unless mo
+    hash = {
+      id: mo["id"]
+    }
+    mo["fields"].each do |k, v|
+      hash[k] = v
+    end
+    pp hash
+    hash
   end
 
 end
