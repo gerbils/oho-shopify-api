@@ -44,6 +44,9 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             createdAt
             updatedAt
             processedAt
+            billingAddress {
+               ...Fragments::AddressFields
+            }
             estimatedTaxes
             taxesIncluded
             name
