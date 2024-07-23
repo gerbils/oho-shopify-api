@@ -5,7 +5,14 @@ require_relative "../client"
 module OhoShopifyApi::Queries; end
 module OhoShopifyApi::Queries::Order
 
-Fragments = OhoShopifyApi::Client.parse <<-'GRAPHQL'
+Fetch = OhoShopifyApi::Client.parse <<-GRAPHQL
+fragment Amount on MoneyBag {
+    shopMoney {
+        amount
+        currencyCode
+    }
+}
+
 fragment AddressFields on MailingAddress {
     id
     name
@@ -20,17 +27,6 @@ fragment AddressFields on MailingAddress {
     phone
 }
 
-GRAPHQL
-
-
-
-Fetch = OhoShopifyApi::Client.parse <<-GRAPHQL
-fragment Amount on MoneyBag {
-    shopMoney {
-        amount
-        currencyCode
-    }
-}
 
 query($filter: String, $limit: Int, $lastCursor: String) {
     orders(query: $filter, first: $limit, after: $lastCursor) {
@@ -45,7 +41,7 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             updatedAt
             processedAt
             billingAddress {
-               ...Fragments::AddressFields
+               ...AddressFields
             }
             estimatedTaxes
             taxesIncluded
