@@ -40,6 +40,7 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             createdAt
             updatedAt
             processedAt
+            billingAddressMatchesShippingAddress
             billingAddress {
                ...AddressFields
             }
