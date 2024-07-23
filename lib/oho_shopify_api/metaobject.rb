@@ -54,7 +54,7 @@ module OhoShopifyApi::Metaobject
 
   def input_handle(handle, type)
     {
-      handle: handle,
+      handle: handle.to_s,
       type:   type,
     }
   end
@@ -112,16 +112,14 @@ module OhoShopifyApi::Metaobject
   def do_find_by_handle(mo_handle)
     raw_result = Client.query(MO::FindByHandle, variables: { handle: mo_handle })
     result = raw_result.to_hash
-    pp result
     mo = result.dig("data", "metaobjectByHandle")
     return nil unless mo
     hash = {
-      id: mo["id"]
+      "id" => mo["id"]
     }
-    mo["fields"].each do |k, v|
-      hash[k] = v
+    mo["fields"].each do |f|
+      hash[f["key"]] = f["value"]
     end
-    pp hash
     hash
   end
 
