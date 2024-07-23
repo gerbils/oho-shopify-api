@@ -44,6 +44,9 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             billingAddress {
                ...AddressFields
             }
+            shippingAddress {
+               ...AddressFields
+            }
             estimatedTaxes
             taxesIncluded
             name
