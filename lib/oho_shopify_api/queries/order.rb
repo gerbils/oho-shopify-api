@@ -61,6 +61,7 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             lineItems(first: 50) {
                 nodes {
                     id
+                    name
                     quantity
                     sku
                     nonFulfillableQuantity
@@ -74,6 +75,9 @@ query($filter: String, $limit: Int, $lastCursor: String) {
                                 currencyCode
                             }
                         }
+                    }
+                    discountedUnitPriceAfterAllDiscountsSet {
+                        ...Amount
                     }
                     discountedTotalSet {
                         ...Amount
