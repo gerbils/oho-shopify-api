@@ -64,44 +64,9 @@ query($filter: String, $limit: Int, $lastCursor: String) {
                     name
                     quantity
                     sku
-                    nonFulfillableQuantity
-                    refundableQuantity
                     currentQuantity
-                    variantTitle
-                    variant {
-                        inventoryItem {
-                            unitCost {
-                                amount
-                                currencyCode
-                            }
-                        }
-                    }
                     discountedUnitPriceAfterAllDiscountsSet {
                         ...Amount
-                    }
-                    discountedTotalSet {
-                        ...Amount
-                    }
-                    discountAllocations {
-                        allocatedAmountSet {
-                            ...Amount
-                        }
-                        discountApplication {
-                            allocationMethod
-                            targetSelection
-                            targetType
-                            value {
-                                ... on MoneyV2 {
-                                    __typename
-                                    amount
-                                }
-                            }
-                        }
-                    }
-                    taxLines(first: 10) {
-                        priceSet {
-                            ...Amount
-                        }
                     }
                 }
             }
