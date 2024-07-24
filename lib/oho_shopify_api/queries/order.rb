@@ -47,9 +47,13 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             shippingAddress {
                ...AddressFields
             }
+            clientIp
+
+
             estimatedTaxes
             taxesIncluded
             name
+            email
             cancelledAt
             discountCodes
             fullyPaid
