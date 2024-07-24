@@ -54,6 +54,7 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             taxesIncluded
             name
             email
+            poNumber
             cancelledAt
             discountCodes
             fullyPaid
@@ -153,7 +154,6 @@ query($filter: String, $limit: Int, $lastCursor: String) {
                 kind
                 status
             }
-
             netPaymentSet {
                 ...Amount
             }
@@ -175,6 +175,7 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             totalTaxSet {
                 ...Amount
             }
+            totalWeight
 
             returns(first: 10) {
                 nodes {
