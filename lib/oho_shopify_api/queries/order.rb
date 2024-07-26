@@ -117,6 +117,13 @@ query($filter: String, $limit: Int, $lastCursor: String) {
                 }
             }
 
+            shippingLines(first: 10) {
+                nodes {
+                discountedPriceSet {
+                    ...Amount
+                }
+            }
+
             transactions(first: 30) {
                 createdAt
                 amountSet { ...Amount }
