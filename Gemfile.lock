@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    oho_shopify_api (0.1.18)
+    oho_shopify_api (0.1.19)
       graphql-client (~> 0.23.0)
 
 GEM
