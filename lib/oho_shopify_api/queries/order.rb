@@ -116,6 +116,25 @@ query($filter: String, $limit: Int, $lastCursor: String) {
                     }
                 }
             }
+
+            transactions(first: 30) {
+                nodes {
+                    createdAt
+                    amountSet { ...Amount }
+                    kind
+                    status
+                    fees {
+                        amount {
+                            amount
+                            currencyCode
+                        }
+                        flatFee {
+                            amount
+                            currencyCode
+                        }
+                    }
+                }
+            }
         }
     }
 }
