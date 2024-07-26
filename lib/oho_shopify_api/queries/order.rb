@@ -41,23 +41,32 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             updatedAt
             processedAt
             billingAddressMatchesShippingAddress
-            billingAddress {
-               ...AddressFields
-            }
-            shippingAddress {
-               ...AddressFields
-            }
+            billingAddress { ...AddressFields }
+            shippingAddress { ...AddressFields }
             clientIp
-
 
             estimatedTaxes
             taxesIncluded
+
             name
             email
             poNumber
             cancelledAt
             discountCodes
             fullyPaid
+
+            currentTotalTaxSet { ...Amount }
+            currentSubtotalLineItemsQuantity
+            currentTotalPriceSet { ...Amount }
+            currentTaxLines {
+                priceSet { ...Amount }
+            }
+            currentCartDiscountAmountSet { ...Amount }
+            currentSubtotalPriceSet { ...Amount }
+            currentTotalAdditionalFeesSet { ...Amount }
+            currentTotalDiscountsSet { ...Amount }
+            currentTotalDutiesSet { ...Amount }
+
             lineItems(first: 50) {
                 nodes {
                     id
@@ -65,9 +74,7 @@ query($filter: String, $limit: Int, $lastCursor: String) {
                     quantity
                     sku
                     currentQuantity
-                    discountedUnitPriceAfterAllDiscountsSet {
-                        ...Amount
-                    }
+                    discountedUnitPriceAfterAllDiscountsSet { ...Amount }
                 }
             }
             refunds(first: 20) {
@@ -76,53 +83,47 @@ query($filter: String, $limit: Int, $lastCursor: String) {
                 note
                 refundLineItems(first: 10) {
                     nodes {
-                        priceSet {
-                            ...Amount
-                        }
+                        priceSet { ...Amount }
                         quantity
-                        subtotalSet {
-                            ...Amount
-                        }
-                        totalTaxSet {
-                            ...Amount
-                        }
+                        subtotalSet { ...Amount }
+                        totalTaxSet { ...Amount }
                         lineItem {
                             id
                             sku
                         }
                     }
                 }
-                totalRefundedSet {
-                    ...Amount
-                }
+                totalRefundedSet { ...Amount }
             }
 
-            transactions {
-                amountSet {
-                    ...Amount
+            returns(first: 10) {
+                nodes {
+                    name
+                    status
+                    totalQuantity
+                    refunds(first: 10) {
+                        nodes {
+                            refundLineItems(first: 10) {
+                                nodes {
+                                    priceSet { ...Amount }
+                                    quantity
+                                    subtotalSet { ...Amount }
+                                    totalTaxSet { ...Amount }
+                                }
+                            }
+                            totalRefundedSet { ...Amount }
+                        }
+                    }
                 }
-                createdAt
-                fees {
-                    amount {
-                        amount
-                        currencyCode
-                    }
-                    flatFee {
-                        amount
-                        currencyCode
-                    }
-                    flatFeeName
-                    rate
-                    rateName
-                    taxAmount {
-                        amount
-                        currencyCode
-                    }
-                    type
-                }
-                kind
-                status
             }
+        }
+    }
+}
+
+GRAPHQL
+end
+
+%{
             netPaymentSet {
                 ...Amount
             }
@@ -146,37 +147,4 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             }
             totalWeight
 
-            returns(first: 10) {
-                nodes {
-                    name
-                    status
-                    totalQuantity
-                    refunds(first: 10) {
-                        nodes {
-                            refundLineItems(first: 10) {
-                                nodes {
-                                    priceSet {
-                                        ...Amount
-                                    }
-                                    quantity
-                                    subtotalSet {
-                                        ...Amount
-                                    }
-                                    totalTaxSet {
-                                        ...Amount
-                                    }
-                                }
-                            }
-                            totalRefundedSet {
-                                ...Amount
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
-
-GRAPHQL
-end
