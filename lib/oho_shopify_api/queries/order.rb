@@ -55,17 +55,16 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             discountCodes
             fullyPaid
 
-            currentTotalTaxSet { ...Amount }
-            currentSubtotalLineItemsQuantity
-            currentTotalPriceSet { ...Amount }
-            currentTaxLines {
-                priceSet { ...Amount }
-            }
             currentCartDiscountAmountSet { ...Amount }
+            currentSubtotalLineItemsQuantity
             currentSubtotalPriceSet { ...Amount }
+            currentTaxLines { priceSet { ...Amount } }
             currentTotalAdditionalFeesSet { ...Amount }
             currentTotalDiscountsSet { ...Amount }
             currentTotalDutiesSet { ...Amount }
+            currentTotalPriceSet { ...Amount }
+            currentTotalTaxSet { ...Amount }
+            currentTotalWeight
 
             lineItems(first: 50) {
                 nodes {
