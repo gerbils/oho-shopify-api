@@ -66,6 +66,8 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             currentTotalTaxSet { ...Amount }
             currentTotalWeight
 
+            netPaymentSet { ...Amount }
+
             lineItems(first: 50) {
                 nodes {
                     id
