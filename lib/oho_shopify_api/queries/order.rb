@@ -76,6 +76,7 @@ query($filter: String, $limit: Int, $lastCursor: String) {
                     sku
                     currentQuantity
                     discountedUnitPriceAfterAllDiscountsSet { ...Amount }
+                    originalUnitPriceSet { ...Amount }
                 }
             }
             refunds(first: 20) {
