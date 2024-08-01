@@ -3,20 +3,20 @@ require "graphql/client/http"
 
 SCHEMA_FILE = "/tmp/shopify_schema.json"
 
-SHOPIFY_STORE = if defined? Rails
+SHOPIFY_STORE = if defined? Rails && defined? Rails.credentials
                   Rails.application.credentials.dig(:shopify, :store)
                 else
                   ENV["SHOPIFY_STORE"]
                 end
 
-SHOPIFY_TOKEN = if defined? Rails
+SHOPIFY_TOKEN = if defined? Rails && defined? Rails.credentials
                   Rails.application.credentials.dig(:shopify, :token)
                 else
                   ENV["SHOPIFY_TOKEN"]
                 end
 
 unless SHOPIFY_STORE && SHOPIFY_TOKEN
-  fail("set SHOPIFY_STORE and _TOKEN in environment or credentialsvariables")
+  fail("set SHOPIFY_STORE and _TOKEN in environment or credentials")
 end
 
 module OhoShopifyApi
@@ -54,7 +54,6 @@ module OhoShopifyApi
 
     if !schema
       STDERR.puts "Loading schema from SHOPIFY"
-      pp HTTP
       schema = GraphQL::Client.load_schema(HTTP).tap do
         STDERR.puts "Caching downloaded schema"
         GraphQL::Client.dump_schema(HTTP, SCHEMA_FILE)
@@ -64,8 +63,6 @@ module OhoShopifyApi
     Schema = schema
     Client = GraphQL::Client.new(schema: Schema, execute: HTTP)
   end
-
-  STDERR.puts "\n\nConnected to shopify\n\n"
 
   Client = Private::Client
 end
