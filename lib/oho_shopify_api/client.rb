@@ -3,17 +3,18 @@ require "graphql/client/http"
 
 SCHEMA_FILE = "/tmp/shopify_schema.json"
 
-SHOPIFY_STORE = if defined? Rails && defined? Rails.credentials
-                  Rails.application.credentials.dig(:shopify, :store)
-                else
-                  ENV["SHOPIFY_STORE"]
-                end
+SHOPIFY_STORE = ENV["SHOPIFY_STORE"]
+    # if defined? Rails && defined? Rails.application1credentials
+    #               Rails.application.credentials.dig(:shopify, :store)
+    #             else
+    #             end
 
-SHOPIFY_TOKEN = if defined? Rails && defined? Rails.credentials
-                  Rails.application.credentials.dig(:shopify, :token)
-                else
-                  ENV["SHOPIFY_TOKEN"]
-                end
+SHOPIFY_TOKEN = ENV["SHOPIFY_TOKEN"]
+  # if defined? Rails && defined? Rails.credentials
+  #                 Rails.application.credentials.dig(:shopify, :token)
+  #               else
+  #                 ENV["SHOPIFY_TOKEN"]
+  #               end
 
 unless SHOPIFY_STORE && SHOPIFY_TOKEN
   fail("set SHOPIFY_STORE and _TOKEN in environment or credentials")
