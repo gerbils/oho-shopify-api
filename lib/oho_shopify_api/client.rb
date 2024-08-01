@@ -3,6 +3,22 @@ require "graphql/client/http"
 
 SCHEMA_FILE = "/tmp/shopify_schema.json"
 
+SHOPIFY_STORE = if defined? Rails
+                  Rails.application.credentials.dig(:shopify, :store)
+                else
+                  ENV["SHOPIFY_STORE"]
+                end
+
+SHOPIFY_TOKEN = if defined? Rails
+                  Rails.application.credentials.dig(:shopify, :token)
+                else
+                  ENV["SHOPIFY_TOKEN"]
+                end
+
+unless SHOPIFY_STORE && SHOPIFY_TOKEN
+  fail("set SHOPIFY_STORE and _TOKEN in environment or credentialsvariables")
+end
+
 module OhoShopifyApi
 
   # general helper
@@ -19,7 +35,7 @@ module OhoShopifyApi
       def headers(context)
         {
           "Content-Type": "application/json",
-          'X-Shopify-Access-Token': ENV["SHOPIFY_TOKEN"] || fail("set SHOPIFY environment variables")
+          'X-Shopify-Access-Token': SHOPIFY_TOKEN,
         }
       end
     end

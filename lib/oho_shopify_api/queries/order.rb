@@ -5,13 +5,20 @@ require_relative "../client"
 module OhoShopifyApi::Queries; end
 module OhoShopifyApi::Queries::Order
 
-Count = OhoShopifyApi::Client.parse <<-GRAPHQL
-query($filter: String, $limit: Int) {
-  ordersCount(query: $filter, first: $limit) {
-    count
-  }
-}
-GRAPHQL
+# Count = OhoShopifyApi::Client.parse <<-GRAPHQL
+# query {
+#   ordersCount {
+#     count
+#   }
+# }
+# GRAPHQL
+#
+
+#query($filter: String, $limit: Int) {
+#  ordersCount(query: $filter, first: $limit) {
+#    count
+#  }
+#}
 
 Fetch = OhoShopifyApi::Client.parse <<-GRAPHQL
 fragment Amount on MoneyBag {

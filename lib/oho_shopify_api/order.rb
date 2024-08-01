@@ -2,6 +2,7 @@ require_relative "./queries/order.rb"
 
 ORDERS_PER_FETCH = 20
 
+
 # module Sapi; end
 module OhoShopifyApi::Order
   extend self
@@ -14,10 +15,10 @@ module OhoShopifyApi::Order
         filter: filter,
         limit:  999,
       }
-      Rails.logger.info("Counting orders with parameters: #{variables.inspect}")
+      # Rails.logger.info("Counting orders with parameters: #{variables.inspect}")
       raw_result = OhoShopifyApi::Client.query(OhoShopifyApi::Queries::Order::Count, variables:)
       result   = raw_result.to_hash
-      result["data"]["ordersCount"]["count"]
+      result["data"]#["ordersCount"]["count"]
   end
 
   # Download all orders since the given datetime, yielding each in turn
@@ -36,7 +37,7 @@ module OhoShopifyApi::Order
         limit:   count,
         lastCursor: cursor
       }
-      Rails.logger.info("Fetching orders with parameters: #{variables.inspect}")
+      # Rails.logger.info("Fetching orders with parameters: #{variables.inspect}")
       raw_result = OhoShopifyApi::Client.query(OhoShopifyApi::Queries::Order::Fetch, variables:)
       result   = raw_result.to_hash
       response = result["data"]["orders"]
