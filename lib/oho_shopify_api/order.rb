@@ -37,20 +37,27 @@ module OhoShopifyApi::Order
         limit:   count,
         lastCursor: cursor
       }
-      # Rails.logger.info("Fetching orders with parameters: #{variables.inspect}")
+      puts("Fetching orders with parameters: #{variables.inspect}")
       raw_result = OhoShopifyApi::Client.query(OhoShopifyApi::Queries::Order::Fetch, variables:)
       result   = raw_result.to_hash
       response = result["data"]["orders"]
       pageInfo = response["pageInfo"]
       cursor   = pageInfo["endCursor"]
-      orders   = response["nodes"]
-      orders.each do |o|
+      orders   = response["edges"]
+      orders.each do |edge|
+        o = edge["node"]
         pp(o["name"])
-        if not callback.call(o)
+        status = callback.call(o)
+        case status
+        when :error
           error_seen = true
-          break
+        when :ok
+          left_to_fetch -= 1
+        when :move_past_duplicate
+          cursor = edge["cursor"]
+          puts "Move cursor to #{cursor}"
+          next
         end
-        left_to_fetch -= 1
       end
     end while !error_seen && left_to_fetch > 0 && pageInfo["hasNextPage"]
   end

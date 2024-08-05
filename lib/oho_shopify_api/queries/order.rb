@@ -49,113 +49,115 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             hasNextPage
             endCursor
         }
-
-        nodes {
-            id
-            createdAt
-            updatedAt
-            processedAt
-            billingAddressMatchesShippingAddress
-            billingAddress { ...AddressFields }
-            shippingAddress { ...AddressFields }
-            clientIp
-
-            estimatedTaxes
-            taxesIncluded
-
-            name
-            email
-            poNumber
-            cancelledAt
-            discountCodes
-            fullyPaid
-
-            currentCartDiscountAmountSet { ...Amount }
-            currentSubtotalLineItemsQuantity
-            currentSubtotalPriceSet { ...Amount }
-            currentTaxLines { priceSet { ...Amount } }
-            currentTotalAdditionalFeesSet { ...Amount }
-            currentTotalDiscountsSet { ...Amount }
-            currentTotalDutiesSet { ...Amount }
-            currentTotalPriceSet { ...Amount }
-            currentTotalTaxSet { ...Amount }
-            currentTotalWeight
-
-            netPaymentSet { ...Amount }
-
-            lineItems(first: 50) {
-                nodes {
-                    id
-                    name
-                    quantity
-                    sku
-                    currentQuantity
-                    discountedUnitPriceAfterAllDiscountsSet { ...Amount }
-                    originalUnitPriceSet { ...Amount }
-                }
-            }
-            refunds(first: 20) {
+        edges {
+            nodes {
+                id
                 createdAt
                 updatedAt
-                note
-                refundLineItems(first: 10) {
+                processedAt
+                billingAddressMatchesShippingAddress
+                billingAddress { ...AddressFields }
+                shippingAddress { ...AddressFields }
+                clientIp
+
+                estimatedTaxes
+                taxesIncluded
+
+                name
+                email
+                poNumber
+                cancelledAt
+                discountCodes
+                fullyPaid
+
+                currentCartDiscountAmountSet { ...Amount }
+                currentSubtotalLineItemsQuantity
+                currentSubtotalPriceSet { ...Amount }
+                currentTaxLines { priceSet { ...Amount } }
+                currentTotalAdditionalFeesSet { ...Amount }
+                currentTotalDiscountsSet { ...Amount }
+                currentTotalDutiesSet { ...Amount }
+                currentTotalPriceSet { ...Amount }
+                currentTotalTaxSet { ...Amount }
+                currentTotalWeight
+
+                netPaymentSet { ...Amount }
+
+                lineItems(first: 50) {
                     nodes {
-                        priceSet { ...Amount }
+                        id
+                        name
                         quantity
-                        subtotalSet { ...Amount }
-                        totalTaxSet { ...Amount }
-                        lineItem {
-                            id
-                            sku
-                        }
+                        sku
+                        currentQuantity
+                        discountedUnitPriceAfterAllDiscountsSet { ...Amount }
+                        originalUnitPriceSet { ...Amount }
                     }
                 }
-                totalRefundedSet { ...Amount }
-            }
-
-            returns(first: 10) {
-                nodes {
-                    name
-                    status
-                    totalQuantity
-                    refunds(first: 10) {
+                refunds(first: 20) {
+                    createdAt
+                    updatedAt
+                    note
+                    refundLineItems(first: 10) {
                         nodes {
-                            refundLineItems(first: 10) {
-                                nodes {
-                                    priceSet { ...Amount }
-                                    quantity
-                                    subtotalSet { ...Amount }
-                                    totalTaxSet { ...Amount }
-                                }
+                            priceSet { ...Amount }
+                            quantity
+                            subtotalSet { ...Amount }
+                            totalTaxSet { ...Amount }
+                            lineItem {
+                                id
+                                sku
                             }
-                            totalRefundedSet { ...Amount }
+                        }
+                    }
+                    totalRefundedSet { ...Amount }
+                }
+
+                returns(first: 10) {
+                    nodes {
+                        name
+                        status
+                        totalQuantity
+                        refunds(first: 10) {
+                            nodes {
+                                refundLineItems(first: 10) {
+                                    nodes {
+                                        priceSet { ...Amount }
+                                        quantity
+                                        subtotalSet { ...Amount }
+                                        totalTaxSet { ...Amount }
+                                    }
+                                }
+                                totalRefundedSet { ...Amount }
+                            }
+                        }
+                    }
+                }
+
+                shippingLines(first: 10) {
+                    nodes {
+                        discountedPriceSet { ...Amount }
+                    }
+                }
+
+                transactions(first: 30) {
+                    createdAt
+                    amountSet { ...Amount }
+                    kind
+                    status
+                    fees {
+                        amount {
+                            amount
+                            currencyCode
+                        }
+                        flatFee {
+                            amount
+                            currencyCode
                         }
                     }
                 }
             }
-
-            shippingLines(first: 10) {
-                nodes {
-                    discountedPriceSet { ...Amount }
-                }
-            }
-
-            transactions(first: 30) {
-                createdAt
-                amountSet { ...Amount }
-                kind
-                status
-                fees {
-                    amount {
-                        amount
-                        currencyCode
-                    }
-                    flatFee {
-                        amount
-                        currencyCode
-                    }
-                }
-            }
+            cursor
         }
     }
 }
