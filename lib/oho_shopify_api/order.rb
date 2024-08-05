@@ -53,7 +53,7 @@ module OhoShopifyApi::Order
           error_seen = true
         when :ok
           left_to_fetch -= 1
-        when :move_past_duplicate
+        when :restart_after_current
           cursor = edge["cursor"]
           puts "Move cursor to #{cursor}"
           next
