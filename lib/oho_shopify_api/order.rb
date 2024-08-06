@@ -43,9 +43,8 @@ module OhoShopifyApi::Order
       response = result["data"]["orders"]
       pageInfo = response["pageInfo"]
       cursor   = pageInfo["endCursor"]
-      orders   = response["edges"]
-      orders.each do |edge|
-        o = edge["node"]
+      orders   = response["nodes"]
+      orders.each do |o|
         pp(o["name"])
         status = callback.call(o)
         case status
@@ -54,13 +53,10 @@ module OhoShopifyApi::Order
         when :ok
           left_to_fetch -= 1
         when :restart_after_current
-          cursor = edge["cursor"]
-          puts "Move cursor to #{cursor}"
-          next
+          puts "skipping"
         end
       end
     end while !error_seen && left_to_fetch > 0 && pageInfo["hasNextPage"]
   end
 
 end
-
