@@ -49,7 +49,8 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             hasNextPage
             endCursor
         }
-          nodes {
+        edges {
+          node {
               id
               createdAt
               updatedAt
@@ -156,6 +157,8 @@ query($filter: String, $limit: Int, $lastCursor: String) {
                   }
               }
           }
+          cursor
+        }
     }
 }
 

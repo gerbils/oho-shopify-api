@@ -42,10 +42,12 @@ module OhoShopifyApi::Order
       result   = raw_result.to_hash
       response = result["data"]["orders"]
       pageInfo = response["pageInfo"]
-      cursor   = pageInfo["endCursor"]
-      orders   = response["nodes"]
-      orders.each do |o|
-        pp(o["name"])
+      # cursor   = pageInfo["endCursor"]
+      orders   = response["edges"]
+      orders.each do |edge|
+        o = edge["node"]
+        cursor = edge["cursor"]
+        pp([ o["name"], cursor ])
         status = callback.call(o)
         case status
         when :error
