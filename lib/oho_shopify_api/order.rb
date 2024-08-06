@@ -25,6 +25,7 @@ module OhoShopifyApi::Order
   # to the given block. Return the final cursor so we can continue where
   # we left off next time
   def from_filter(max_to_fetch, filter, &callback)
+    puts "top of from_filter: #{max_to_fetch} #{filter}"
     pageInfo = {}
     cursor = nil
     error_seen = false
@@ -58,6 +59,7 @@ module OhoShopifyApi::Order
           puts "skipping"
         end
       end
+      puts "end of loop, #{left_to_fetch} #{cursor}"
     end while !error_seen && left_to_fetch > 0 && pageInfo["hasNextPage"]
   end
 
