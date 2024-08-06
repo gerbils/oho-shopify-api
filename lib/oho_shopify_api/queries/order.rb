@@ -50,7 +50,7 @@ query($filter: String, $limit: Int, $lastCursor: String) {
             endCursor
         }
         edges {
-            nodes {
+            node {
                 id
                 createdAt
                 updatedAt
