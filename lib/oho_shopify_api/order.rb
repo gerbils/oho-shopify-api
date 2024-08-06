@@ -83,6 +83,7 @@ module OhoShopifyApi::Order
       end
       puts "end of loop, #{need_additional}: #{left_to_fetch} #{cursor}"
     end while !error_seen && left_to_fetch > 0 && (need_additional || pageInfo["hasNextPage"])
+      puts "**** exit from_filter"
   end
 
 end
